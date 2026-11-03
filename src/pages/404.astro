@@ -5,7 +5,10 @@
 //
 // Note there is NO layout here. The 404 page should render even if the
 // layout itself is what's broken, so it keeps its own minimal markup and
-// only imports global.css instead of BaseLayout.
+// only imports global.css instead of BaseLayout. The site name still comes
+// from consts.ts so it stays in sync with the header.
+import "../styles/global.css";
+import { SITE_TITLE } from "../consts";
 import "../styles/global.css";
 ---
 
@@ -15,7 +18,7 @@ import "../styles/global.css";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>404 — Fran T. Olivo</title>
+    <title>404 — {SITE_TITLE}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>

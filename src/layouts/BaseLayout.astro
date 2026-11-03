@@ -5,7 +5,7 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR } from "../consts";
 
 // Pages pass values in as attributes: <BaseLayout title="..." description="...">
 // They arrive pre-processed in `Astro.props`. The `interface Props` block
@@ -41,7 +41,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="author" content={SITE_TITLE} />
+    <meta name="author" content={AUTHOR} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
