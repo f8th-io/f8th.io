@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "astro": {
+      "source": "astrolicious/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/astro/SKILL.md",
+      "computedHash": "ebefe26b231d32379c14e41a46c2de7b4b0184543bedab7febdabe4fb21fba4e"
+    },
+    "cloudflare": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cloudflare/SKILL.md",
+      "computedHash": "e7c26bb690042060d60fcccf3e5807d000c9c064f732b6fcfccb8bbcdc5dc04a"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "web-quality-audit": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-quality-audit/SKILL.md",
+      "computedHash": "9be796fc70ff05cf9842327d234b019376dc1abad8d7e3c4e3ea2dab8d8d3deb"
+    },
+    "wrangler": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/wrangler/SKILL.md",
+      "computedHash": "6e431b3ca4d91547e3d1a224bfd5e725e54843cff3537aca48ea455a81bf7e88"
+    }
+  }
+}
