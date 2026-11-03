@@ -1,12 +1,17 @@
 ---
-// The header is intentionally minimal: the site name links home, which is the
-// standard convention and the only navigation a one-page site needs.
+// The header is intentionally minimal: the site name links home (the standard
+// convention) and the theme toggle sits at the top right.
 import { SITE_TITLE } from "../consts";
 ---
 
 <header class="site-header">
   <nav class="container">
     <a href="/">{SITE_TITLE}</a>
+    <!-- Label is corrected by the theme script in BaseLayout if the visitor
+         pinned a theme on a previous visit (initial "System" is the default). -->
+    <button id="theme-toggle" type="button" aria-label="Color theme, following the system setting">
+      System
+    </button>
   </nav>
 </header>
 
@@ -22,11 +27,30 @@ import { SITE_TITLE } from "../consts";
 
   nav {
     display: flex;
+    justify-content: space-between; /* name left, toggle right */
+    align-items: center;
   }
 
   a {
     font-weight: 600;
     text-decoration: none;
     color: inherit; /* plain title, not accent-colored */
+  }
+
+  button {
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    min-width: 5.25rem; /* same width for System/Light/Dark: no jumping */
+    cursor: pointer;
+  }
+
+  button:hover {
+    color: var(--color-fg);
+    border-color: var(--color-fg);
   }
 </style>

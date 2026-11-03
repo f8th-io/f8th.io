@@ -4,12 +4,17 @@
    defaults: typography, colours and layout helpers. */
 
 /* _________________________________________________________________
-   Theme: colour WITHOUT JavaScript
+   Theme
    `color-scheme: light dark` tells the browser to follow the OS setting and
    makes form controls/scrollbars match. light-dark(..., ...) returns the first
    colour in light mode and the second in dark mode — no media query needed.
    Define every colour as a CSS *variable* here, then reference var(...) below,
    so changing the palette later means editing only this block.
+
+   The header's theme toggle pins an explicit choice by setting
+   `data-theme="light"` or `data-theme="dark"` on <html> (see BaseLayout);
+   with that attribute absent the two selectors below simply don't
+   match and the site keeps following the system setting.
    _______________________________________________________________________ */
 :root {
   color-scheme: light dark;
@@ -19,6 +24,16 @@
   --color-muted: light-dark(oklch(45% 0.015 265), oklch(65% 0.015 265));
   --color-accent: light-dark(oklch(52% 0.14 258), oklch(72% 0.13 258));
   --color-border: light-dark(oklch(88% 0.01 265), oklch(30% 0.015 265));
+}
+
+/* Explicitly chosen themes. Keep these selectors in sync with the values the
+   toggle writes to localStorage (key "theme", see BaseLayout.astro). */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* _________________________________________________________________

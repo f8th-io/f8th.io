@@ -45,6 +45,58 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!--
+      Theme boot script. Must run BEFORE first paint: if the visitor pinned
+      a theme last visit, we apply it here to avoid rendering one mode and
+      then flashing the other (FOUC). is:inline keeps Astro from bundling or
+      deferring it.
+
+      No attribute on <html>  = follow the system (default)
+      data-theme="light|dark" = pinned choice, CSS reacts via :root[data-theme]
+
+      The one delegated click listener below survives anything the page adds
+      later, so the header button needs no script of its own.
+    -->
+    <script is:inline>
+      const stored = localStorage.getItem("theme");
+      if (stored === "light" || stored === "dark") {
+        document.documentElement.dataset.theme = stored;
+      }
+
+      /** Label + aria-label for the current mode. */
+      function syncThemeToggle() {
+        const btn = document.getElementById("theme-toggle");
+        if (!btn) return;
+        const mode = document.documentElement.dataset.theme || "system";
+        const text = mode === "system" ? "System" : mode === "light" ? "Light" : "Dark";
+        const detail =
+          mode === "system" ? "following the system setting" : "pinned";
+        btn.textContent = text;
+        btn.setAttribute("aria-label", `Color theme: ${mode}, ${detail}`);
+      }
+
+      document.addEventListener("click", (ev) => {
+        // `closest` needs the event target to be an element (not a text node)
+        const btn = ev.target instanceof Element && ev.target.closest("#theme-toggle");
+        if (!btn) return;
+        // Cycle: system → light → dark → system …
+        const current = document.documentElement.dataset.theme || "system";
+        const next = current === "system" ? "light" : current === "light" ? "dark" : "system";
+        if (next === "system") {
+          delete document.documentElement.dataset.theme;
+          localStorage.removeItem("theme");
+        } else {
+          document.documentElement.dataset.theme = next;
+          localStorage.setItem("theme", next);
+        }
+        syncThemeToggle();
+      });
+
+      // Buttons further down in <body> don't exist while this script (in
+      // <head>) runs, so fix the label once the DOM is parsed.
+      document.addEventListener("DOMContentLoaded", syncThemeToggle);
+    </script>
+
     <!-- Open Graph: how link previews look when shared on social/chat apps -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />

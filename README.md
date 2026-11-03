@@ -17,7 +17,7 @@ Static Assets](https://developers.cloudflare.com/workers/static-assets/)
 | Language | TypeScript, strict                                  |
 | Content  | Plain HTML components now; Markdown collections later |
 | Styling  | Plain CSS: one global file + scoped `<style>` blocks |
-| JS       | None shipped to the browser                          |
+| JS       | One tiny inline theme script; otherwise none        |
 
 ## Prerequisites
 
@@ -41,9 +41,10 @@ npm ci    # install exactly the versions in package-lock.json
 
 Before pushing, check:
 
-- [ ] Light **and** dark mode render correctly (flip the OS theme)
+- [ ] Light **and** dark mode render correctly (flip the OS theme), and the
+      header toggle cycles System → Light → Dark and survives a reload
 - [ ] An unknown URL shows the custom 404 page
-- [ ] DevTools → Network → JS: nothing loaded
+- [ ] DevTools → Network → JS: no JS *files* (the theme script is inline)
 - [ ] Lighthouse scores ~100 on all categories (run against `preview`)
 
 ## Writing pages
