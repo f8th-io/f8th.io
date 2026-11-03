@@ -58,43 +58,72 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       later, so the header button needs no script of its own.
     -->
     <script is:inline>
+      // All mode handling in one place. The <html> element carries the
+      // current mode as data-theme (absent = "system" = follow the OS);
+      // the radiogroup in Header.astro mirrors it via data-mode buttons.
+      const MODES = ["system", "light", "dark"];
+
+      function currentMode() {
+        const t = document.documentElement.dataset.theme;
+        return t === "light" || t === "dark" ? t : "system";
+      }
+
+      // Apply before first paint so there's no wrong-theme flash (FOUC).
       const stored = localStorage.getItem("theme");
       if (stored === "light" || stored === "dark") {
         document.documentElement.dataset.theme = stored;
       }
 
-      /** Label + aria-label for the current mode. */
-      function syncThemeToggle() {
-        const btn = document.getElementById("theme-toggle");
-        if (!btn) return;
-        const mode = document.documentElement.dataset.theme || "system";
-        const text = mode === "system" ? "System" : mode === "light" ? "Light" : "Dark";
-        const detail =
-          mode === "system" ? "following the system setting" : "pinned";
-        btn.textContent = text;
-        btn.setAttribute("aria-label", `Color theme: ${mode}, ${detail}`);
-      }
-
-      document.addEventListener("click", (ev) => {
-        // `closest` needs the event target to be an element (not a text node)
-        const btn = ev.target instanceof Element && ev.target.closest("#theme-toggle");
-        if (!btn) return;
-        // Cycle: system → light → dark → system …
-        const current = document.documentElement.dataset.theme || "system";
-        const next = current === "system" ? "light" : current === "light" ? "dark" : "system";
-        if (next === "system") {
+      /** Writes the mode to <html> and storage; "system" removes the pin. */
+      function setMode(mode) {
+        if (mode === "system") {
           delete document.documentElement.dataset.theme;
           localStorage.removeItem("theme");
         } else {
-          document.documentElement.dataset.theme = next;
-          localStorage.setItem("theme", next);
+          document.documentElement.dataset.theme = mode;
+          localStorage.setItem("theme", mode);
         }
-        syncThemeToggle();
+        renderThemeControls();
+      }
+
+      /** Syncs the segmented control to the current mode. */
+      function renderThemeControls() {
+        const mode = currentMode();
+        const buttons = document.querySelectorAll("#theme-switch [role~='radio']");
+        for (const btn of buttons) {
+          const selected = btn.dataset.mode === mode;
+          btn.setAttribute("aria-checked", String(selected));
+          // Roving tabindex: only the selected radio is tabbable; arrow keys
+          // move both focus and selection.
+          btn.tabIndex = selected ? 0 : -1;
+        }
+      }
+
+      // The buttons further down in <body> don't exist while this script (in
+      // <head>) runs, so sync the static markup once the DOM is parsed.
+      document.addEventListener("DOMContentLoaded", renderThemeControls);
+
+      document.addEventListener("click", (ev) => {
+        // `closest` needs the event target to be an element (not a text node)
+        const btn =
+          ev.target instanceof Element && ev.target.closest("#theme-switch [data-mode]");
+        if (btn instanceof HTMLElement) setMode(btn.dataset.mode);
       });
 
-      // Buttons further down in <body> don't exist while this script (in
-      // <head>) runs, so fix the label once the DOM is parsed.
-      document.addEventListener("DOMContentLoaded", syncThemeToggle);
+      // Arrow keys inside the radiogroup: focus + selection move together
+      // (see WAI-ARIA Authoring Practices for radio groups).
+      const NEXT = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      document.addEventListener("keydown", (ev) => {
+        const delta = NEXT[ev.key];
+        if (!delta) return; // some other key
+        const btn = ev.target instanceof Element && ev.target.closest("#theme-switch [data-mode]");
+        if (!btn) return;
+        ev.preventDefault(); // arrows are ours inside the group, not page scroll
+        // % keeps the index inside 0-2 for both directions
+        const i = MODES.indexOf(currentMode());
+        setMode(MODES[(i + delta + MODES.length) % MODES.length]);
+        document.querySelector(`#theme-switch [data-mode="${currentMode()}"]`).focus();
+      });
     </script>
 
     <!-- Open Graph: how link previews look when shared on social/chat apps -->
