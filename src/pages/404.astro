@@ -1,0 +1,41 @@
+---
+// 404.astro is special: Astro knows the filename means "not found", and
+// outputs dist/404.html. In Phase 3 Cloudflare automatically serves that file
+// for any URL that doesn't match something else.
+//
+// Note there is NO layout here. The 404 page should render even if the
+// layout itself is what's broken, so it keeps its own minimal markup and
+// only imports global.css instead of BaseLayout.
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>404 — Fran T. Olivo</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <main class="notfound container">
+      <h1>404</h1>
+      <p>There's nothing here at that address.</p>
+      <p><a href="/">Back to the home page</a></p>
+    </main>
+  </body>
+</html>
+
+<style>
+  .notfound {
+    max-width: 42rem;
+    margin-block: clamp(3rem, 10vw, 8rem);
+  }
+
+  /* Big, friendly number — an intentional design cue, not a stack trace. */
+  h1 {
+    font-size: clamp(4rem, 12vw, 8rem);
+    line-height: 1;
+  }
+</style>

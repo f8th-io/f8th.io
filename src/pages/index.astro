@@ -1,16 +1,60 @@
 ---
+// src/pages/index.astro → the file ROUTE is "/" (filename = URL path).
+// A page is an .astro file: everything between the two `---` fences ("front-
+// matter") is TypeScript that runs ONCE at build time in Node; the markup
+// below is templated then delivered as plain HTML — the visitor's browser
+// receives zero JavaScript.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR } from "../consts";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<!-- No title prop means the browser tab would show the same as every other
+     page's title; the About page must have a unique one for SEO. -->
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <div class="intro container">
+    <div class="prose">
+      <h1>{AUTHOR}</h1>
+      <p class="muted headline">SRE &amp; Platform Engineer</p>
+
+      <!-- Author bio, kept verbatim from the owner's notes. -->
+      <p>
+        I'm a Site Reliability &amp; Platform Engineer focused on understanding
+        and scaling distributed systems, building resilient infrastructure, and
+        improving developer experience through intuitive platforms.
+      </p>
+      <p>
+        Curious by nature, I enjoy making sense of complex systems, finding
+        simpler ways to solve problems, and sharing what I learn along the way.
+      </p>
+      <p>
+        Outside of tech, I play the oboe, enjoy staying active, and unwind with
+        walks, books, and music.
+      </p>
+
+      <SocialLinks />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Vertical rhythm: a bit more space above the fold than between blocks. */
+  .intro {
+    padding-block: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+
+  h1 {
+    margin-block-end: 0.25rem;
+  }
+
+  /* The subtitle under the name. */
+  .headline {
+    font-size: 1.125rem;
+    letter-spacing: 0.02em; /* small caps feel: spaced out */
+  }
+
+  /* Space between the last paragraph and the social links */
+  .intro :global(ul.social) {
+    margin-block-start: 2rem;
+  }
+</style>

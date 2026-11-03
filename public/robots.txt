@@ -1,0 +1,8 @@
+# Search engines are welcome. This file only needs rules that *differ* from
+# the defaults — by default they crawl everything indexable.
+
+User-agent: *
+Allow: /
+
+# The sitemap line is added when the blog (and @astrojs/sitemap) land:
+# Sitemap: https://f8th.io/sitemap-index.xml
