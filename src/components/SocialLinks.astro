@@ -1,0 +1,52 @@
+---
+// Reusable list of social links. Each entry comes from consts.ts, so the
+// About page, the footer or any future page can render it identically.
+import { SOCIAL_LINKS } from "../consts";
+
+interface Props {
+  /** Visually hidden heading text for screen readers */
+  label?: string;
+}
+
+const { label = "Elsewhere on the internet" } = Astro.props;
+---
+
+<ul class="social" aria-label={label}>
+  {
+    // Array.map over the consts list: add a handle in consts.ts and it
+    // appears here without touching this component.
+    SOCIAL_LINKS.map((link) => (
+      <li>
+        {/* rel="me" tells profile-verification tools this page owns those
+            accounts. No target="_blank": links open in the same tab like
+            every other link, which also removes the need for noopener. */}
+        <a href={link.href} rel="me">
+          {link.name}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    /* cancel global paragraph spacing inside the list */
+    margin-block-end: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* Underline comes back on hover/focus: everyone gets affordance feedback,
+     and keyboard users don't lose the focus ring. */
+  a:hover,
+  a:focus-visible {
+    text-decoration: underline;
+  }
+</style>

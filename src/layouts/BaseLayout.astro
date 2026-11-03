@@ -1,0 +1,70 @@
+---
+// BaseLayout.astro is wrapped around every page. A *layout* is just a normal
+// component whose markup contains <slot />, the placeholder where the page
+// that uses it injects its own content.
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+
+// Pages pass values in as attributes: <BaseLayout title="..." description="...">
+// They arrive pre-processed in `Astro.props`. The `interface Props` block
+// documents the contract for TypeScript; optional fields get default values
+// in the destructure below.
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+
+// Full page title: browsers show only ~50-60 chars in tabs, but search
+// engines rewrite long ones, so keep it "page name — site name".
+const pageTitle = `${title} — ${SITE_TITLE}`;
+
+// Canonical URL: the one address search engines should index, regardless of
+// query strings or protocol. Astro.site comes from astro.config.mjs; if it
+// were missing, new URL would throw at build time and fail the build loudly —
+// better than silently rendering an empty canonical tag.
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<!-- lang tells screen readers and translation tools which language this is -->
+<html lang="en">
+  <head>
+    <!-- charset must be first so the browser knows the encoding of the rest -->
+    <meta charset="utf-8" />
+    <!-- width=device-width: don't zoom out on phones; initial-scale=1: start at 100% -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE_TITLE} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph: how link previews look when shared on social/chat apps -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en" />
+
+    <!-- Twitter/X card tags; "summary" shows a small card with title+description -->
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <!-- "Skip to content" is the first element on the page so Tab finds it
+         immediately; the link itself lives in global.css (visually hidden
+         until focused). -->
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <!-- id="main" is the target of the skip link above -->
+    <main id="main">
+      <!-- Whatever is inside <BaseLayout> on the page lands here -->
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

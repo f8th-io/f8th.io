@@ -1,0 +1,32 @@
+---
+// The header is intentionally minimal: the site name links home, which is the
+// standard convention and the only navigation a one-page site needs.
+import { SITE_TITLE } from "../consts";
+---
+
+<header class="site-header">
+  <nav class="container">
+    <a href="/">{SITE_TITLE}</a>
+  </nav>
+</header>
+
+<style>
+  /* Styles here are SCOPED: Astro rewrites this class name to a hashed value
+     (e.g. .site-header[data-astro-x]) so this rule can never leak into other
+     components. Global defaults live in global.css; only component-specific
+     layout goes in a scoped block like this one. */
+  header {
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  nav {
+    display: flex;
+  }
+
+  a {
+    font-weight: 600;
+    text-decoration: none;
+    color: inherit; /* plain title, not accent-colored */
+  }
+</style>
