@@ -13,9 +13,11 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container">
     <p>
-      © {year} {AUTHOR}
-      · Content <abbr title="Creative Commons Attribution 4.0">CC BY 4.0</abbr>
-      · Code <abbr title="MIT License">MIT</abbr>
+      <!-- The `&nbsp;` spaces avoid HTML whitespace collapse, which would
+           otherwise glue the middot to the previous word ("Olivo·"). -->
+      © {year}&nbsp;{AUTHOR}&nbsp;· Content&nbsp;<abbr
+        title="Creative Commons Attribution 4.0">CC BY 4.0</abbr>&nbsp;·
+      Code&nbsp;<abbr title="MIT License">MIT</abbr>
     </p>
   </div>
 </footer>

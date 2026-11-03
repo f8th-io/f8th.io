@@ -18,9 +18,10 @@ interface Props {
 
 const { title, description = SITE_DESCRIPTION } = Astro.props;
 
-// Full page title: browsers show only ~50-60 chars in tabs, but search
-// engines rewrite long ones, so keep it "page name — site name".
-const pageTitle = `${title} — ${SITE_TITLE}`;
+// Full page title: browsers show only ~50-60 chars in tabs. The pattern is
+// "page — site name"; on the home page that would render as
+// "Fran T. Olivo — Fran T. Olivo", so there it stays just the site name.
+const pageTitle = title === SITE_TITLE ? title : `${title} — ${SITE_TITLE}`;
 
 // Canonical URL: the one address search engines should index, regardless of
 // query strings or protocol. Astro.site comes from astro.config.mjs; if it
