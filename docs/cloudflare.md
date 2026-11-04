@@ -116,3 +116,35 @@ curl -sI https://www.f8th.io/ | head -3                       # 301, Location: h
 Also test in a browser: theme switching (System/Light/Dark), and the 404 page.
 If any header is missing, `dist/_headers` was probably not regenerated — that
 means the deploy used `npx astro build` instead of `npm run build`.
+
+## 8. The `cf` CLI — wrangler's successor (adopted 2026-11-04, still beta)
+
+Cloudflare published the **`cf`** CLI on 2026-09-28 (`npm i -g cf`, open beta,
+agent-first design: JSON output, `cf cli search "<task in plain English>"`
+for command discovery). Timelines from the launch post: when cf's beta ends,
+Wrangler gets one final release pointing at cf, then ~18 months maintenance —
+so **wrangler.jsonc is valid infrastructure for years**; no urgency.
+
+How the two divide in this repo:
+
+| Task | Use |
+| --- | --- |
+| Local Cloudflare simulation | `npx wrangler dev --port 8787` |
+| Routine deploy | push to `main` → Workers Builds |
+| Manual deploy fallback | `npx wrangler deploy` (after `npm run build`) |
+| Live log stream | `npx wrangler tail` (cf cannot tail yet) |
+| Account/resource/API data (DNS, zones, worker metadata, query bans etc.) | `cf …` (JSON out; pair with `cf cli search`) |
+
+Setup facts (in case re-reading docs seems cheaper than guessing): cf does
+NOT reuse the wrangler OAuth — it logged in with its own device flow
+(`cf auth login`; credentials at
+`~/Library/Preferences/cloudflare/config/default.json`). It is installed
+globally (not a repo dependency — keeps repo minimal). For non-interactive
+use set `CLOUDFLARE_ACCOUNT_ID=63ea3638fe29274326746bdd6e9eb97b` (or add it
+to your shell profile).
+
+Important boundary (straight from Cloudflare's docs): **do not run `cf dev`,
+`cf build`, or `cf deploy` in this project until `cf migrate` has converted
+`wrangler.jsonc` → `cloudflare.config.ts`** — until then those commands don't
+read this project's config. Migrate only when cf hits stable and you want the
+typed TS config file.

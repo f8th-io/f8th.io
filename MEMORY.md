@@ -105,6 +105,16 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
 
+**2026-11-04 (cf CLI adoption):** owner asked to install the Cloudflare CLI for resource
+interaction; clarified the wrangler-vs-cf reality (cf released 2026-09-28 in beta,
+wrangler NOT yet deprecated — final release at cf's beta end + 18 months maintenance).
+Installed globally `cf 1.0.0-beta.27` (alias `cloudflare`), separate OAuth login via device
+flow `cf auth login` (475 scopes granted — broad; wrangler's login stays narrow by default),
+verified `cf workers list` sees `f8th-io`. **Boundary respected:** no `cf dev/build/deploy`
+in this repo until `cf migrate` (unmigrated wrangler project = unsupported); wrangler keeps
+dev/deploy/tail duties. Docs: AGENTS.md cloudflare bullet + docs/cloudflare.md §8. Account
+id convenience var: `CLOUDFLARE_ACCOUNT_ID=63ea3638fe29274326746bdd6e9eb97b`.
+
 **2026-11-04 (signing attempt — closed without adopting):** the "Main Prod" ruleset
 (currentUser-created in the dashboard) blocks everyone but the owner: rules update/creation/
 deletion/non_fast_forward + required_signatures + required_linear_history, with the owner
