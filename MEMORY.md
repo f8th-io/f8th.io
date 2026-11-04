@@ -132,8 +132,12 @@ best-practices/SEO/agentic-browsing, no failing audits (LCP 0.8 s, CLS 0, TBT 0 
   verification matrix is identical to the manual one — same status codes, headers, CSP hash.
   Pipeline build command / NODE_VERSION confirmed correct; auto-deploy on push is now the
   routine path (manual `wrangler deploy` = fallback only).
-- **DNSSEC** still pending (section 5 of docs/cloudflare.md): DNSSEC toggle in CF, DS from
-  dashboard into Spaceship.
+- **DNSSEC: DONE & ACTIVE (same day).** Owner completed the toggle + DS-at-Spaceship;
+  verified live 2026-11-04: DS `2371 13 2 …AEB41316` published at the .io TLD, DNSKEYs
+  (KSK 257 3 13 + ZSK 256 3 13, ECDSA P-256) served by `jake.ns.cloudflare.com`, and all
+  three public validating resolvers (9.9.9.9, 8.8.8.8, 1.1.1.1) return `flags: …ad` for
+  the apex = the DS→DNSKEY→RRSIG chain validates. Quick-check recipe for future agents:
+  `dig +dnssec f8th.io @1.1.1.1` and look for `ad` in flags.
 - **Workers Builds git integration:** owner enabled it today before the last checks. Next
   push to `main` (this journal commit) is the first end-to-end git-deploy test — if the
   build tab shows success but the live site breaks, suspect the pipeline's build command /
