@@ -1,0 +1,32 @@
+# Cloudflare reads this file from the build output (dist/_headers) and adds
+# these HTTP headers to matching responses. `/*` matches every path; rules
+# are first-match-wins, so the more specific /_astro/* rule goes last.
+#
+# This file in public/ is a TEMPLATE: `npm run build` regenerates
+# dist/_headers so that the CSP script hashes below stay valid (see
+# scripts/generate-headers.mjs). Edit the rules here, not in dist.
+#
+# CSP notes:
+# - script-src is strict: 'self' + SHA-256 hashes of the inline theme script.
+#   The hash is computed at build time; `unsafe-inline` would allow ALL
+#   inline JS, defeating the point of CSP.
+# - style-src needs 'unsafe-inline' because Astro inlines <style> blocks into
+#   the HTML and the future code highlighter (Shiki) uses inline styles.
+#   Styles injected as text are far less dangerous than scripts.
+# - no third-party origins yet: add them here if you ever add analytics, a
+#   webfont, or an embedded service — the browser will block it otherwise.
+# Reference values: https://developers.cloudflare.com/workers/static-assets/headers/
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' {{SCRIPT_HASHES}}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Astro fingerprints its hashed bundles, so they never change content: cache
+# them for a year. (No such files exist yet; the rule starts working when a
+# build produces /_astro/* assets.)
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

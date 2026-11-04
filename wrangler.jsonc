@@ -1,0 +1,25 @@
+// Cloudflare Workers configuration.
+// Docs: https://developers.cloudflare.com/wrangler/configuration/
+{
+  // The Worker's name. It's how the project shows up in the Cloudflare
+  // dashboard and in `npx wrangler` commands; a preview URL
+  // <name>.<account-subdomain>.workers.dev is created automatically.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "f8th-io",
+  // Compatibility date pins which runtime features are enabled; "today's
+  // date" is the usual recommendation. Update it when you want new features.
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    // Astro's build output. `npm run build` before every deploy.
+    "directory": "./dist",
+    // For any URL that doesn't match a file, serve dist/404.html with a 404
+    // status. (Distinction from "single-page-application", which would serve
+    // index.html instead — only correct for client-side-routed apps.)
+    "not_found_handling": "404-page"
+    // html_handling defaults to "auto-trailing-slash", which matches our
+    // `trailingSlash: "always"` setting in astro.config.mjs:
+    // both /about and /about/ resolve to /about/ (canonical).
+  }
+  // NOTE: there is no `main` script. This is an assets-only Worker: Cloudflare
+  // serves dist/ directly, no compute involved, no usage cost for requests.
+}
