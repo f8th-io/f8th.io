@@ -119,14 +119,19 @@ best-practices/SEO/agentic-browsing, no failing audits (LCP 0.8 s, CLS 0, TBT 0 
   rule to see the hostname — the dashboard's "missing DNS" complaint meant exactly that.
 - **Rogue-rule loop (closed):** an owner-created custom "HTTP(S) redirect" rule had no/scoped
   hostname condition and rebuilt the URL from request fields → every apex request 308→301
-  self-loop (`/robots.txt` → `https://f8th.io/robots.txt`). Rule disabled — diagram kept of
-  the signature: a rule that echoes back the SAME host+path it received with a full-URL
-  Location is always a mis-scoped redirect rule; www preset + hostname `equals www.f8th.io`
-  is the only rule that should exist. **Owner TODO:** turn on SSL/TLS → Edge Certificates →
-  "Always Use HTTPS" (needed because with the rogue rule gone, plain `http://f8th.io/`
-  silently 200s; the sheet's custom rule used to 301 it accidentally). HSTS is already
-  `max-age=31536000; includeSubDomains; preload` so browsers upgrade, but non-browser
-  clients matter too.
+  self-loop (`/robots.txt` → `https://f8th.io/robots.txt`). Rule disabled — signature kept:
+  a rule that echoes back the SAME host+path it received with a full-URL Location is always
+  a mis-scoped redirect rule; www preset + hostname `equals www.f8th.io` is the only rule
+  that should exist.
+- **Always Use HTTPS: DONE (same day).** With the rogue rule removed, `http://f8th.io/`
+  silently 200'd (the bad rule used to 301 it by accident) → owner flipped SSL/TLS → Edge
+  Certificates → "Always Use HTTPS" (HSTS `max-age=31536000; includeSubDomains; preload`
+  was already present for browsers) → verified live: `http://f8th.io/` 301s cleanly to
+  the apex.
+- **First Workers Builds git deploy: SUCCESS** ("Ready" in the dashboard) and the post-deploy
+  verification matrix is identical to the manual one — same status codes, headers, CSP hash.
+  Pipeline build command / NODE_VERSION confirmed correct; auto-deploy on push is now the
+  routine path (manual `wrangler deploy` = fallback only).
 - **DNSSEC** still pending (section 5 of docs/cloudflare.md): DNSSEC toggle in CF, DS from
   dashboard into Spaceship.
 - **Workers Builds git integration:** owner enabled it today before the last checks. Next
