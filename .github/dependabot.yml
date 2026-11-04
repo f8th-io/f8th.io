@@ -1,0 +1,22 @@
+# Dependabot: weekly npm updates, all dependencies grouped into a single
+# PR so the owner reviews one diff instead of a swarm. GitHub Actions in
+# this repo are few and version-pinned, but npm+actions stay configured
+# here anyway in case CI grows.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-deps:
+        patterns:
+          - "*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions-deps:
+        patterns:
+          - "*"

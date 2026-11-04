@@ -99,7 +99,13 @@ lesson: CSP violations can be silent — verify with Lighthouse's console audit.
 
 ## Discipline
 
-- Direct commits to `main` until CI exists (then PRs + branch protection).
+- CI runs on every push/PR (`.github/workflows/ci.yml`: `npm ci`, `check`,
+  `build`). Branch protection (owner, dashboard) makes PRs + a green CI the
+  merge requirement; until it's on, small docs/journal commits may still go
+  straight to `main`.
+- Deploy ≠ CI: pushing to `main` both triggers a Workers Builds deploy and a
+  CI run. CI red = build broke somewhere; investigate before the next push,
+  don't stack fixes.
 - Keep dependencies minimal: no UI frameworks, no Tailwind, no themes.
 - npm's install-script allowlist blocks `fsevents` (harmless, polling
   fallback). Don't "fix" it silently.

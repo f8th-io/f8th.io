@@ -1,0 +1,37 @@
+# CI runs BEFORE anything merges to main: typecheck + a real build.
+#
+# It deliberately does NOT deploy: deployment belongs to Cloudflare's
+# Workers Builds git integration (see docs/cloudflare.md §6). Keeping
+# build vs. deploy separate means a red CI can never strand the live
+# site, and a green CI is just the precondition for merging.
+#
+# `npm run build` matters beyond a sanity check: its `postbuild` step
+# regenerates dist/_headers (CSP script hashes). If the inline theme
+# script ever changes, only a real build catches a stale-hash failure
+# that would silently disable the theme toggle in production.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node version comes from .nvmrc so CI can never drift from the
+      # locally pinned version (repo convention: single source of truth).
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
