@@ -196,10 +196,11 @@ then retry (as before — retry works).
    Workers Builds git setup as phase 2 of deploys, and a verification checklist).
 5. Phase 4: ci.yml, dependabot (npm, github-actions), branch protection, then PRs from now on.
    → ci.yml + dependabot.yml committed 2026-11-04; first CI run on that push: **success**
-   in 27 s (workflow run 41883452636), Dependabot update jobs completed too. Owner must
-   still enable branch protection in GitHub dashboard (Settings →
-   Branches → `main` → Require PR before merging + require the `check-and-build` CI
-   check), after which PRs are mandatory.
+   in 27 s (workflow run 41883452636), Dependabot update jobs completed too. **Branch
+   protection: owner declined the PR requirement** ("kinda dumb to restrict myself" — solo
+   repo). Agreed setup: protection optional, force-push/deletion bans only; PRs for
+   Dependabot + risky refactors; direct `main` commits stay the routine for small work.
+   AGENTS.md discipline updated to match.
 
 ## Plan docs
 

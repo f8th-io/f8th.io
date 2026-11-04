@@ -100,12 +100,15 @@ lesson: CSP violations can be silent — verify with Lighthouse's console audit.
 ## Discipline
 
 - CI runs on every push/PR (`.github/workflows/ci.yml`: `npm ci`, `check`,
-  `build`). Branch protection (owner, dashboard) makes PRs + a green CI the
-  merge requirement; until it's on, small docs/journal commits may still go
-  straight to `main`.
-- Deploy ≠ CI: pushing to `main` both triggers a Workers Builds deploy and a
-  CI run. CI red = build broke somewhere; investigate before the next push,
-  don't stack fixes.
+  `build`) as an **alarm, not a gate** — the owner chose no PR round-trips
+  for solo work (2026-11-04): small direct commits to `main` are fine; red
+  CI means investigate before the next push, never stack fixes.
+- If branch protection is enabled, it's for the free wins only: ban force
+  pushes and branch deletion, no PR requirement, no admin-pr exceptions
+  needed. PRs are for Dependabot updates and large/risky refactors.
+- Deploy ≠ CI: pushing to `main` triggers both a Workers Builds deploy and a
+  CI run; the pipeline only deploys a successful build, so a bad push shows
+  up as a failed deployment rather than a broken site.
 - Keep dependencies minimal: no UI frameworks, no Tailwind, no themes.
 - npm's install-script allowlist blocks `fsevents` (harmless, polling
   fallback). Don't "fix" it silently.
