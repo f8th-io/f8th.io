@@ -148,3 +148,40 @@ Important boundary (straight from Cloudflare's docs): **do not run `cf dev`,
 `wrangler.jsonc` → `cloudflare.config.ts`** — until then those commands don't
 read this project's config. Migrate only when cf hits stable and you want the
 typed TS config file.
+
+### Migration attempt 2026-11-04 (rolled back the same night)
+
+`cf migrate` itself was clean (zero TODO items: `cloudflare.config.ts` +
+`wrangler.config.ts` generated, `cf` devDep added, `wrangler.jsonc` untouched)
+— but `cf build` then failed with
+`Build Output Specification: no root config found`, because cf's framework
+auto-detection saw Astro and delegated to `npx astro build`, which toy
+with the *adapter* (`@astrojs/cloudflare`, an SSR model). Root cause, from
+cf's own docs:
+
+- cf runs, in order: ① a detected supported framework's own command, then
+  ② the Cloudflare build tool (Wrangler ≥4.136 for projects without the Vite
+  plugin). Astro detection forces the adapter-based path; there is **no
+  config to disable framework detection**, and a purely static Astro site
+  is documented as adapter-free ("you do not need the Astro Cloudflare
+  adapter" — the docs' static path is exactly our `wrangler.jsonc`).
+- Adopting the adapter = `output: 'server'`: every unmatched request becomes
+  compute, KV session namespace, entirely different pricing/behavior —
+  contradicts the site's design (assets-only, zero compute, zero-cost).
+- `wrangler` stays as a devDep regardless: with the Wrangler bundler, cf
+  itself *requires* wrangler ≥4.136 for `cf dev/build/deploy` (and `tail`)
+
+**Rollback executed:** restored `package.json` + lockfile, deleted the two
+generated config files and `.cloudflare/`; `.gitignore` keeps the
+`.cloudflare/` rule (harmless, useful when cf supports us later) — the
+deploy pipeline never touched production (Workers Builds still ran
+`npx wrangler deploy` throughout).
+
+**Re-check criteria before retrying `cf migrate`:**
+1. cf stable (≥1.0.0, not `-beta.x`), or a beta that supports the
+   static-Astro/wrangler-bundler combination for build/deploy — e.g. a
+   `framework` override in `cloudflare.config.ts` or an astro adapter that
+   stays static.
+2. Confirmed `_headers` handling in cf's Build Output path (docs say the
+   Workers' `static-assets` engine honors `_headers`, the same engine cf
+   uploads through — but verify empirically like the earlier matrix did).

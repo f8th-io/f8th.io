@@ -95,10 +95,11 @@ lesson: CSP violations can be silent — verify with Lighthouse's console audit.
   as the routine path.
 - A second CLI, **`cf`** (Cloudflare's new agent-first CLI, global install),
   handles *account/resources* (DNS, zones, worker metadata; JSON output). It
-  does NOT drive this project: `cf migrate` has not been run, so never use
-  `cf dev/build/deploy` here, and `cf` can't stream logs — keep `npx wrangler
-  tail` for live logs. Wrangler isn't deprecated yet (cf is the successor;
-  wrangler maintenance runs until ~18 months after cf's beta ends).
+  does NOT drive this project: cf cannot build/deploy a **static-Astro**
+  project without the SSR adapter (attempted + rolled back 2026-11-04, see
+  docs/cloudflare.md §8), so never use `cf dev/build/deploy` here, and keep
+  `npx wrangler tail` for live logs. Wrangler isn't deprecated yet (cf is the
+  successor; wrangler maintenance runs until ~18 months after cf's beta end).
 - Dashboard decisions (DNS, `www` redirect, Workers Builds git integration) are
   made manually by the owner. **No Terraform** — discarded on purpose; don't
   reintroduce it.

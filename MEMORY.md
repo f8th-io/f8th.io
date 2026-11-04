@@ -105,6 +105,24 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
 
+**2026-11-04/05 (cf migrate attempted → rolled back; details in docs/cloudflare.md §8):**
+owner asked to go all-in on cf: migrate, remove wrangler, retarget the deploy pipeline.
+Migration itself was clean (`cf migrate` w/ Wrangler bundler: `cloudflare.config.ts` +
+`wrangler.config.ts` + `cf` devDep; zero required TODOs), but **`cf build` failed** —
+"Astro framework detection" delegated to `npx astro build` which emits no Build Output
+`config.json` (only the `@astrojs/cloudflare` SSR adapter does; our site is the documented
+*adapter-free static* path, and cf has no framework-detection override). Adopting the
+adapter would mean SSR/KV/compute — the opposite of this site's assets-only zero-cost
+design — so per explicit owner choice we **rolled back entirely**: package.json/lockfile
+restored, both generated configs + `.cloudflare/` deleted; only the `.gitignore` rule for
+`.cloudflare/` stayed (harmless future-proofing). Production untouched (pipeline never
+left `npx wrangler deploy`). **To retry later:** cf stable (≥1.0.0 non-beta) AND confirmed
+support for static Astro + wrangler-bundler build/deploy (docs/cloudflare.md §8 lists
+exact re-check criteria + the `_headers` verification step). Owner understanding captured:
+wrangler the *package* stays regardless (cf itself needs wrangler ≥4.136 for its build
+path, plus `wrangler tail`); it's `wrangler.jsonc` that would eventually go when the docs'
+own removal checklist is safe to run.
+
 **2026-11-04 (cf CLI adoption):** owner asked to install the Cloudflare CLI for resource
 interaction; clarified the wrangler-vs-cf reality (cf released 2026-09-28 in beta,
 wrangler NOT yet deprecated — final release at cf's beta end + 18 months maintenance).
