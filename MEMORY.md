@@ -195,8 +195,9 @@ then retry (as before — retry works).
    zone/Spaceship NS, custom domain on worker, www Single Redirect, DNSSEC both sides,
    Workers Builds git setup as phase 2 of deploys, and a verification checklist).
 5. Phase 4: ci.yml, dependabot (npm, github-actions), branch protection, then PRs from now on.
-   → ci.yml + dependabot.yml committed 2026-11-04 (this commit); AGENTS.md discipline
-   updated. Owner must still enable branch protection in GitHub dashboard (Settings →
+   → ci.yml + dependabot.yml committed 2026-11-04; first CI run on that push: **success**
+   in 27 s (workflow run 41883452636), Dependabot update jobs completed too. Owner must
+   still enable branch protection in GitHub dashboard (Settings →
    Branches → `main` → Require PR before merging + require the `check-and-build` CI
    check), after which PRs are mandatory.
 
