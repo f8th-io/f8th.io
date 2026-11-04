@@ -105,16 +105,34 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
 
-**2026-11-04 (deploy walkthrough session):** owner confirmed target is **Workers Static
-Assets** (not Pages — clarifying question asked and answered; Pages would have meant
-discarding `wrangler.jsonc`). Owner requested manual first deploy → `docs/cloudflare.md`
-written with the full ordered walkthrough: `wrangler login` → `whoami` → `npm run build` →
-`wrangler deploy` + workers.dev verification checks, zone/Spaceship nameserver handover,
-custom-domain attach on the worker, `www` Single Redirect rule, DNSSEC (DS record from CF
-into Spaceship), then Workers Builds git integration (build cmd `npm run build`,
-`NODE_VERSION=26`) as the continuous path, plus a domain-level curl verification checklist.
-Owner's next action = run section 1 of that doc themselves; worker name `f8th-io` means the
-preview URL will be `f8th-io.<their-subdomain>.workers.dev`.
+**2026-11-04 (first production deploy — LIVE):** deploy target decision (morning session):
+owner confirmed **Workers Static Assets**, not Pages (Pages would have meant discarding
+`wrangler.jsonc`; the whole first-deploy walkthrough lived in docs/cloudflare.md and section
+1 was executed manually). The site is now live on the custom domain `f8th.io` + `www`. Final live verify: apex 200; `www` 301 →
+apex; `/index` 307 → `/`; `/nope/` → 404 with the styled 404 page; all five security headers
+present; CSP hash `sha256-V1wElLtHBTI/XAQ1NpXSlNE56CY3O2mLrDlKSc2tZg4=` matches the
+generated one byte-for-byte. Production Lighthouse: 100 across performance/accessibility/
+best-practices/SEO/agentic-browsing, no failing audits (LCP 0.8 s, CLS 0, TBT 0 ms).
+
+- **www setup:** CNAME `www` → apex, **Proxied** (orange) was created; attaching via Worker
+  custom-domain was option A. Lesson: a proxied DNS record is a *prerequisite* for a redirect
+  rule to see the hostname — the dashboard's "missing DNS" complaint meant exactly that.
+- **Rogue-rule loop (closed):** an owner-created custom "HTTP(S) redirect" rule had no/scoped
+  hostname condition and rebuilt the URL from request fields → every apex request 308→301
+  self-loop (`/robots.txt` → `https://f8th.io/robots.txt`). Rule disabled — diagram kept of
+  the signature: a rule that echoes back the SAME host+path it received with a full-URL
+  Location is always a mis-scoped redirect rule; www preset + hostname `equals www.f8th.io`
+  is the only rule that should exist. **Owner TODO:** turn on SSL/TLS → Edge Certificates →
+  "Always Use HTTPS" (needed because with the rogue rule gone, plain `http://f8th.io/`
+  silently 200s; the sheet's custom rule used to 301 it accidentally). HSTS is already
+  `max-age=31536000; includeSubDomains; preload` so browsers upgrade, but non-browser
+  clients matter too.
+- **DNSSEC** still pending (section 5 of docs/cloudflare.md): DNSSEC toggle in CF, DS from
+  dashboard into Spaceship.
+- **Workers Builds git integration:** owner enabled it today before the last checks. Next
+  push to `main` (this journal commit) is the first end-to-end git-deploy test — if the
+  build tab shows success but the live site breaks, suspect the pipeline's build command /
+  NODE_VERSION=26 first.
 
 **2026-11-04 housekeeping session:** all test servers/processes stopped (`astro preview`,
 `wrangler dev`/workerd, agent-browser + headless Chrome; ports 4321/8787 free). Added mandatory

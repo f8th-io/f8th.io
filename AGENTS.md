@@ -89,6 +89,10 @@ lesson: CSP violations can be silent — verify with Lighthouse's console audit.
 - `wrangler.jsonc` is an assets-only Worker: no `main`, `not_found_handling:
   "404-page"`. Trailing slashes are handled by the assets router
   (`auto-trailing-slash`, matches `astro.config.mjs → trailingSlash: "always"`).
+- Deploys run **continuously via Workers Builds** (git integration, owner
+  enabled 2026-11-04): push to `main` → build → deploy. Manual `npx wrangler
+  deploy` is the fallback only (e.g. when the pipeline fails) — don't use it
+  as the routine path.
 - Dashboard decisions (DNS, `www` redirect, Workers Builds git integration) are
   made manually by the owner. **No Terraform** — discarded on purpose; don't
   reintroduce it.
