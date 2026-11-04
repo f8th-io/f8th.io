@@ -105,6 +105,17 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
 
+**2026-11-04 (deploy walkthrough session):** owner confirmed target is **Workers Static
+Assets** (not Pages — clarifying question asked and answered; Pages would have meant
+discarding `wrangler.jsonc`). Owner requested manual first deploy → `docs/cloudflare.md`
+written with the full ordered walkthrough: `wrangler login` → `whoami` → `npm run build` →
+`wrangler deploy` + workers.dev verification checks, zone/Spaceship nameserver handover,
+custom-domain attach on the worker, `www` Single Redirect rule, DNSSEC (DS record from CF
+into Spaceship), then Workers Builds git integration (build cmd `npm run build`,
+`NODE_VERSION=26`) as the continuous path, plus a domain-level curl verification checklist.
+Owner's next action = run section 1 of that doc themselves; worker name `f8th-io` means the
+preview URL will be `f8th-io.<their-subdomain>.workers.dev`.
+
 **2026-11-04 housekeeping session:** all test servers/processes stopped (`astro preview`,
 `wrangler dev`/workerd, agent-browser + headless Chrome; ports 4321/8787 free). Added mandatory
 "Project journal" section to AGENTS.md (owner asked for it). Decided `MEMORY.md` becomes a
@@ -152,7 +163,10 @@ then retry (as before — retry works).
    output `dist`, Node 26 → `.nvmrc`; set `NODE_VERSION=26`).
 3. Zone setup: add `f8th.io` zone (Free), nameservers at Spaceship, DNSSEC + DS record.
    Custom domain f8th.io on the worker + `www` redirect rule via Single Redirect.
-4. `docs/cloudflare.md` for manual dashboard decisions.
+4. ~~`docs/cloudflare.md` for manual dashboard decisions~~ — written 2026-11-04
+   (owner chose "walk me through it": deployment stays manual; doc covers login → deploy,
+   zone/Spaceship NS, custom domain on worker, www Single Redirect, DNSSEC both sides,
+   Workers Builds git setup as phase 2 of deploys, and a verification checklist).
 5. Phase 4: ci.yml, dependabot (npm, github-actions), branch protection, then PRs from now on.
 
 ## Plan docs
