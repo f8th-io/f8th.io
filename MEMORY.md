@@ -105,6 +105,20 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
 
+**2026-11-04 (signing attempt — closed without adopting):** the "Main Prod" ruleset
+(currentUser-created in the dashboard) blocks everyone but the owner: rules update/creation/
+deletion/non_fast_forward + required_signatures + required_linear_history, with the owner
+added as **bypass actor (always)** — pushes succeed via the bypass even unsigned (verified:
+`96085a3..20f98f2` accepted), Dependabot PRs stay fine (GitHub signs its own commits).
+SSH commit signing was configured locally (`gpg.format=ssh`, `user.signingKey
+id_ed25519.pub`, `commit.gpgsign`, `tag.gpgsign`) but **dropped by owner** ("let's forget
+our signing") when the signing-key registration couldn't complete cleanly — the signed top
+commit came back `verified:false reason:unknown_key` — so the local config was unset and
+signatures are simply not required of the owner (bypass covers it, badges may read
+Unverified, cosmetic). If signing is ever revived, the missing piece is: register the
+**existing** key again at Settings → SSH and GPG keys with type **Signing key** (the
+macbookair key `AAAA…V9unScV`), then `git commit --amend` re-signs automatically.
+
 **2026-11-04 (first production deploy — LIVE):** deploy target decision (morning session):
 owner confirmed **Workers Static Assets**, not Pages (Pages would have meant discarding
 `wrangler.jsonc`; the whole first-deploy walkthrough lived in docs/cloudflare.md and section
