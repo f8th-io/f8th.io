@@ -13,7 +13,7 @@ export const AUTHOR = "Fran T. Olivo";
 
 // Handles live here so a rename is a one-line change. social links are built
 // from these constants below instead of being typed out somewhere else.
-export const GITHUB_USER = "n0ct1s-k8sh";
+export const GITHUB_USER = "f8th-io";
 export const X_USER = "f8th_io";
 export const LINKEDIN_USER = "ftolivo";
 

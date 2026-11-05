@@ -92,7 +92,7 @@ validation" with no parent/child mismatch.
 After the manual deploy works, switch to "push to `main` = deploy":
 
 1. Workers dashboard → **f8th-io** → Settings → **Builds** → **Connect git**:
-   the `n0ct1s-k8sh/f8th.io` GitHub repo, branch `main`.
+   the `f8th-io/f8th.io` GitHub repo, branch `main`.
 2. Build command `npm run build`; output directory handled by wrangler config
    (dist/) — review the pipeline settings vs `wrangler.jsonc` (they must match:
    the Worker definition lives in the repo, the dashboard build only feeds it).

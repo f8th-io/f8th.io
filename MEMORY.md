@@ -17,17 +17,20 @@ Budget: €0 hosting (domain renewal only).
 - **Hosting:** Cloudflare **Workers Static Assets** (NOT Pages — deprecated-ish). Free.
 - **No Terraform** — discarded. All Cloudflare config done manually in the dashboard +
   documented in `docs/cloudflare.md` (planned).
-- **Repo:** public `github.com/n0ct1s-k8sh/f8th.io`, default branch `main`, commit directly to
+- **Repo:** public `github.com/f8th-io/f8th.io` (renamed from `n0ct1s-k8sh`, 2026-11-05),
+  default branch `main`, commit directly to
   main until CI + previews exist (then PRs).
 - **Language:** English only.
 - **Brand:** `SITE_TITLE = "f8th.io"` (header, `<title>`, og:title); `AUTHOR = "Fran T. Olivo"`
   (About h1, footer, meta author). Deliberate split in `src/consts.ts`.
 - **License split:** code MIT (LICENSE), content CC BY 4.0 (LICENSE-CONTENT).
 - **Later:** blog, projects, CV, visual style, favicon, i18n.
-- **Socials:** GitHub `n0ct1s-k8sh` (will rename account someday — links only defined in
+- **Socials:** GitHub `f8th-io` (renamed from `n0ct1s-k8sh` on 2026-11-05 — links only defined in
   consts.ts), X `f8th_io`, LinkedIn `ftolivo`.
-- Owner may rename GitHub nick later: repo URLs redirect automatically, profile URL does not;
-  Cloudflare Workers Builds needs a re-check after rename.
+- ~~Owner may rename GitHub nick later~~ — **done 2026-11-05**: nick `n0ct1s-k8sh` → `f8th-io`.
+  Repo URLs redirect automatically (old path still resolves), profile URL does not; Cloudflare
+  Workers Builds git integration still pointed at the repo — re-checked after the rename (see
+  2026-11-05 entry below).
 
 ## Skills installed (committed, `skills-lock.json`)
 
@@ -41,7 +44,7 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
 
 ### 0 Prerequisites — mostly done
 - Node 26.13.0 (LTS), pinned in `.nvmrc` (`26`). Terraform not needed anymore.
-- GitHub repo public, exists, SSH + `gh` auth OK (user `n0ct1s-k8sh`).
+- GitHub repo public, exists, SSH + `gh` auth OK (user `f8th-io`, renamed 2026-11-05).
 - Cloudflare zone/DNSSEC: **not verified yet** (owner does dashboard setup).
 
 ### 1 Scaffold — done (commit `d0703b8`)
@@ -104,6 +107,18 @@ npm has an allow-list for install scripts: `fsevents` denied (fine, polling fall
   `apple-touch-icon.png`; chose “revert everything” over keeping the new favicon →
   `Header.astro`, `BaseLayout.astro`, `favicon.ico`, `favicon.svg` restored to the pre-branch
   state. No dangling references; rebuilt + re-verified (all requests 200).
+
+**2026-11-05 (GitHub nickname renamed):** owner changed the GH nick `n0ct1s-k8sh` → `f8th-io`
+(done in the GitHub dashboard before the session). Updated in this repo: `src/consts.ts`
+`GITHUB_USER` (the only place the site's GitHub link is defined → header/footer/socials pick it
+up on next build), `docs/cloudflare.md` §6 (repo path in the Workers Builds instructions), and
+the stale references in this file. Also re-pointed the local remote:
+`git remote set-url origin git@github.com:f8th-io/f8th.io.git` (GitHub redirects the old path
+anyway, but the explicit URL avoids depending on that). Verified: `gh api user` → `f8th-io`,
+`gh repo view f8th-io/f8th.io` OK. Left alone on purpose: global git `user.name` (still
+`n0ct1s-k8sh` in `~/.gitconfig` — owner's call whether commit author names should follow the
+nick), and historical commits (rewriting history for a nick change isn't worth it). Cloudflare
+Worker name is already `f8th-io` (independent of the GH nick, unchanged).
 
 **2026-11-04/05 (cf migrate attempted → rolled back; details in docs/cloudflare.md §8):**
 owner asked to go all-in on cf: migrate, remove wrangler, retarget the deploy pipeline.
@@ -253,6 +268,6 @@ projects/CV, visual style: mentioned `frontend-design` + `web-design-guidelines`
 ## Owner prefs to remember
 
 - Prefers concrete visual patterns (asked for icon segmented control, not text/cycle).
-- Will rename GitHub nick later.
+- ~~Will rename GitHub nick later.~~ Renamed to `f8th-io` on 2026-11-05 (done).
 - Likes short, commented, learning-oriented code.
 - Check in before committing anything beyond the obvious.
